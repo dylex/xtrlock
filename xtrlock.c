@@ -197,6 +197,7 @@ int main(int argc, char **argv){
         break;
       default:
         if (clen != 1) break;
+	if (cbuf[0] == 0x15) rlen = 0; else
         /* allow space for the trailing \0 */
 	if (rlen < (sizeof(rbuf) - 1)){
 	  rbuf[rlen]=cbuf[0];
