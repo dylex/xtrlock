@@ -11,19 +11,19 @@ This package is now maintained by Matthew Vernon <matthew@debian.org>.
 
 Program Copyright (C) 1993, 1994 Ian Jackson.
 Modifications for Debian GNU/Linux Copyright (C) 1995 Stephen Early.
+Modifications for Debian GNU/Linux since v2.0-9 Copyright (C)
+2005-2012 Matthew Vernon
 
 This program and its documentation are free software; you can
 redistribute them and/or modify them under the terms of the GNU
 General Public License as published by the Free Software Foundation;
-either version 2, or (at your option) any later version.
+either version 3, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 General Public License for more details.
 
-You should have received a copy of the GNU General Public License with
-your Debian GNU/Linux system, in /usr/share/common-licenses/GPL, or with the
-Debian GNU/Linux hello source package as the file COPYING.  If not,
-write to the Free Software Foundation, Inc., 59 Temple Place - Suite
-330, Boston, MA 02111-1307, USA.
+On Debian GNU/Linux, a copy of the GNU General Public License version
+3 may be found in /usr/share/common-licenses/GPL-3. It is also
+included in the source package as GPL-3.txt

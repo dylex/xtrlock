@@ -1,3 +1,31 @@
+xtrlock (2.3) unstable; urgency=low
+
+  * remove reference to xlock, which is no longer in Debian (Closes: #721724)
+
+ -- Matthew Vernon <matthew@debian.org>  Wed, 04 Sep 2013 15:37:38 +0100
+
+xtrlock (2.2) unstable; urgency=low
+
+  * Move menu entry to /usr/share/menu
+  * Change menu section to Screen/Locking
+  * Update standards-version
+  * Add a lintian override for being setgid shadow
+  
+ -- Matthew Vernon <matthew@debian.org>  Tue, 26 Jun 2012 20:22:20 +0100
+
+xtrlock (2.1) unstable; urgency=low
+
+  * never exit non-zero without saying why.
+  * try repeatedly, with waits, to grab the keyboard (Closes: #316343).
+  * include a copy of the GPL in the source package (Closes: #519327).
+  * honour nostrip DEB_BUILD_OPTION (Closes: #438346).
+  * Debian's package is essentially upstream; only include one changelog
+    in the binary package (rather than one and a symlink)
+  * Don't install README.Debian any more, as it's mostly just build
+    instructions
+  
+ -- Matthew Vernon <matthew@debian.org>  Tue, 26 Jun 2012 19:12:02 +0100
+
 xtrlock (2.0-14) unstable; urgency=low
 
   * remove obsolete build-depends on xutils (closes: #579036)

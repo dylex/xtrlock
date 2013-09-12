@@ -85,6 +85,8 @@ int main(int argc, char **argv){
 #ifdef SHADOW_PWD
   struct spwd *sp;
 #endif
+  struct timeval tv;
+  int tvt, gs;
 
   if (argc != 1) {
     fprintf(stderr,"xtrlock (version %s): no arguments allowed\n",program_version);
@@ -156,14 +158,39 @@ int main(int argc, char **argv){
                               lock_x_hot,lock_y_hot);
 
   XMapWindow(display,window);
-  if (XGrabKeyboard(display,window,False,GrabModeAsync,GrabModeAsync,
-		    CurrentTime)!=GrabSuccess) {
+
+  /*Sometimes the WM doesn't ungrab the keyboard quickly enough if
+   *launching xtrlock from a keystroke shortcut, meaning xtrlock fails
+   *to start We deal with this by waiting (up to 100 times) for 10,000
+   *microsecs and trying to grab each time. If we still fail
+   *(i.e. after 1s in total), then give up, and emit an error
+   */
+  
+  gs=0; /*gs==grab successful*/
+  for (tvt=0 ; tvt<100; tvt++) {
+    ret = XGrabKeyboard(display,window,False,GrabModeAsync,GrabModeAsync,
+			CurrentTime);
+    if (ret == GrabSuccess) {
+      gs=1;
+      break;
+    }
+    /*grab failed; wait .01s*/
+    tv.tv_sec=0;
+    tv.tv_usec=10000;
+    select(1,NULL,NULL,NULL,&tv);
+  }
+  if (gs==0){
+    fprintf(stderr,"xtrlock (version %s): cannot grab keyboard\n",
+	    program_version);
     exit(1);
   }
+
   if (XGrabPointer(display,window,False,(KeyPressMask|KeyReleaseMask)&0,
                GrabModeAsync,GrabModeAsync,None,
                cursor,CurrentTime)!=GrabSuccess) {
     XUngrabKeyboard(display,CurrentTime);
+    fprintf(stderr,"xtrlock (version %s): cannot grab pointer\n",
+	    program_version);
     exit(1);
   }
 
