@@ -85,8 +85,8 @@ int main(int argc, char **argv){
   XSetWindowAttributes attrib;
   Cursor cursor;
   Pixmap csr_source,csr_mask;
-  XColor csr_fg, csr_bg, dummy;
-  int ret;
+  XColor csr_fg, csr_bg, dummy, black;
+  int ret, screen, blank = 0;
   struct passwd *pw;
 #ifdef SHADOW_PWD
   struct spwd *sp;
@@ -94,8 +94,11 @@ int main(int argc, char **argv){
   struct timeval tv;
   int tvt, gs;
 
-  if (argc > 2) {
-    fprintf(stderr,"xtrlock (version %s): no arguments allowed\n",program_version);
+  if ((argc == 2) && (strcmp(argv[1], "-b") == 0)) {
+    blank = 1;
+  } else if (argc > 2) {
+    fprintf(stderr,"xtrlock (version %s); usage: xtrlock [-b]\n",
+            program_version);
     exit(1);
   }
   
@@ -111,12 +114,12 @@ int main(int argc, char **argv){
   /* logically, if we need to do the following then the same 
      applies to being installed setgid shadow.  
      we do this first, because of a bug in linux. --jdamery */ 
-  setgid(getgid());
+  if (setgid(getgid())) { perror("setgid"); exit(1); }
   /* we can be installed setuid root to support shadow passwords,
      and we don't need root privileges any longer.  --marekm */
-  setuid(getuid());
+  if (setuid(getuid())) { perror("setuid"); exit(1); }
 
-  if (argc == 2)
+  if (argc == 2 && !blank)
   {
 	  FILE *f = strcmp(argv[1], "-") ? fopen(argv[1], "r") : stdin;
 	  if (!f)
@@ -147,11 +150,22 @@ int main(int argc, char **argv){
 	    program_version);
     exit(1);
   }
-
+  
   attrib.override_redirect= True;
-  window= XCreateWindow(display,DefaultRootWindow(display),
-                        0,0,1,1,0,CopyFromParent,InputOnly,CopyFromParent,
-                        CWOverrideRedirect,&attrib);
+
+  if (blank) {
+    screen = DefaultScreen(display);
+    attrib.background_pixel = BlackPixel(display, screen);
+    window= XCreateWindow(display,DefaultRootWindow(display),
+                          0,0,DisplayWidth(display, screen),DisplayHeight(display, screen),
+                          0,DefaultDepth(display, screen), CopyFromParent, DefaultVisual(display, screen),
+                          CWOverrideRedirect|CWBackPixel,&attrib); 
+    XAllocNamedColor(display, DefaultColormap(display, screen), "black", &black, &dummy);
+  } else {
+    window= XCreateWindow(display,DefaultRootWindow(display),
+                          0,0,1,1,0,CopyFromParent,InputOnly,CopyFromParent,
+                          CWOverrideRedirect,&attrib);
+  }
                         
   XSelectInput(display,window,KeyPressMask|KeyReleaseMask);
 
