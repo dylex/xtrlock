@@ -1,3 +1,27 @@
+xtrlock (2.6) unstable; urgency=low
+
+  * patch from Simon Ruderich to correctly add hardening flags
+  * check returns of setuid and setgid
+  * build-depend on dpkg-dev
+  
+ -- Matthew Vernon <matthew@debian.org>  Tue, 07 Jan 2014 14:22:55 +0000
+
+xtrlock (2.5) unstable; urgency=low
+
+  * correct contributor name (sorry!)
+  * add hardening flags
+  * update version number
+
+ -- Matthew Vernon <matthew@debian.org>  Sun, 05 Jan 2014 16:27:52 +0000
+
+xtrlock (2.4) unstable; urgency=low
+
+  * add a -b option to blank the screen (code based on patch by Markus,
+    waldeck@gmx.de, for which thanks; documentation by myself. 
+    (Closes: #636993)
+
+ -- Matthew Vernon <matthew@debian.org>  Sun, 05 Jan 2014 12:01:48 +0000
+
 xtrlock (2.3) unstable; urgency=low
 
   * remove reference to xlock, which is no longer in Debian (Closes: #721724)
