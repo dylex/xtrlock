@@ -86,20 +86,33 @@ int main(int argc, char **argv){
   Cursor cursor;
   Pixmap csr_source,csr_mask;
   XColor csr_fg, csr_bg, dummy, black;
-  int ret, screen, blank = 0;
+  int ret, screen, blank = 0, fork_after = 0;
   struct passwd *pw;
 #ifdef SHADOW_PWD
   struct spwd *sp;
 #endif
   struct timeval tv;
   int tvt, gs;
+  char *pwfile = NULL;
 
-  if ((argc == 2) && (strcmp(argv[1], "-b") == 0)) {
-    blank = 1;
-  } else if (argc > 2) {
-    fprintf(stderr,"xtrlock (version %s); usage: xtrlock [-b]\n",
-            program_version);
-    exit(1);
+  while (argc > 1) {
+    if ((strcmp(argv[1], "-b") == 0)) {
+      blank = 1;
+      argc--;
+      argv++;
+    } else if ((strcmp(argv[1], "-f") == 0)) {
+      fork_after = 1;
+      argc--;
+      argv++;
+    } else if (!pwfile && !blank && argc == 2) {
+      pwfile = argv[1];
+      argc--;
+      argv++;
+    } else {
+      fprintf(stderr,"xtrlock (version %s); usage: xtrlock [-b] [-f]\n",
+              program_version);
+      exit(1);
+    }
   }
   
   errno=0;  pw= getpwuid(getuid());
@@ -119,9 +132,9 @@ int main(int argc, char **argv){
      and we don't need root privileges any longer.  --marekm */
   if (setuid(getuid())) { perror("setuid"); exit(1); }
 
-  if (argc == 2 && !blank)
+  if (pwfile)
   {
-	  FILE *f = strcmp(argv[1], "-") ? fopen(argv[1], "r") : stdin;
+	  FILE *f = strcmp(pwfile, "-") ? fopen(pwfile, "r") : stdin;
 	  if (!f)
 		  perror("specified password file");
 	  else
@@ -129,7 +142,7 @@ int main(int argc, char **argv){
 		  char *p;
 		  fgets(fpw, 256, f);
 		  fclose(f);
-		  if (p = strchr(fpw, '\n'))
+		  if ((p = strchr(fpw, '\n')))
 			  *p = 0;
 		  if (strlen(fpw) < 13)
 			  *fpw = 0;
@@ -232,6 +245,17 @@ int main(int argc, char **argv){
     fprintf(stderr,"xtrlock (version %s): cannot grab pointer\n",
 	    program_version);
     exit(1);
+  }
+
+  if (fork_after) {
+    pid_t pid = fork();
+    if (pid < 0) {
+      fprintf(stderr,"xtrlock (version %s): cannot fork: %s\n",
+              program_version, strerror(errno));
+      exit(1);
+    } else if (pid > 0) {
+      exit(0);
+    }
   }
 
   for (;;) {
