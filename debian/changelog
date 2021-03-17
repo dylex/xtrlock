@@ -1,7 +1,41 @@
+xtrlock (2.15) unstable; urgency=medium
+
+  * Also support XK_KP_Enter (ie. the numpad 'Enter') to submit a password.
+    Thanks to Steve Ward for the patch. (Closes: #982634)
+  * Bump Standards-Version to 4.5.1.
+  * wrap-and-sort -sa.
+
+ -- Chris Lamb <lamby@debian.org>  Sat, 13 Feb 2021 15:34:52 +0000
+
+xtrlock (2.14) unstable; urgency=medium
+
+  * Mark 0001-smoketest autopkgtest as "superficial". (Closes: #974491)
+  * Use debhelper-compat level 13.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 12 Nov 2020 11:08:30 +0000
+
+xtrlock (2.13) unstable; urgency=medium
+
+  * Add a warning that xtrlock/X11 does not support grabbing events under
+    Wayland. (Closes: #953319)
+  * Bump Standards-Version to 4.5.0.
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 12 Mar 2020 15:06:15 +0000
+
 xtrlock (2.12) unstable; urgency=medium
 
   * CVE-2016-10894: Attempt to grab multitouch devices which are not
-    intercepted via XGrabPointer. (Closes: #830726)
+    intercepted via XGrabPointer.
+
+    xtrlock did not block multitouch events so an attacker could still input
+    and thus control various programs such as Chromium, etc. via so-called
+    "multitouch" events such as pan scrolling, "pinch and zoom", or even being
+    able to provide regular mouse clicks by depressing the touchpad once and
+    then clicking with a secondary finger.
+
+    This fix does not address the situation where Eve plugs in a multitouch
+    device *after* the screen has been locked. For more information on this
+    angle, please see <https://bugs.debian.org/830726#115>. (Closes: #830726)
   * Bump Standards-Version to 4.4.1.
 
  -- Chris Lamb <lamby@debian.org>  Fri, 11 Oct 2019 12:41:39 -0700
