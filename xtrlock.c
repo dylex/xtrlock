@@ -126,6 +126,10 @@ int main(int argc, char **argv){
   int tvt, gs;
   char *pwfile = NULL;
 
+  if (getenv("WAYLAND_DISPLAY"))
+      fprintf(stderr,"WARNING: Wayland X server detected: xtrlock"
+         " cannot intercept all user input. See xtrlock(1).\n");
+
   while (argc > 1) {
     if ((strcmp(argv[1], "-b") == 0)) {
       blank = 1;
@@ -330,7 +334,7 @@ int main(int argc, char **argv){
       case XK_Delete: case XK_BackSpace:
         if (rlen>0) rlen--;
         break;
-      case XK_Linefeed: case XK_Return:
+      case XK_Linefeed: case XK_Return: case XK_KP_Enter:
         if (rlen==0) break;
         rbuf[rlen]=0;
         if (passwordok(rbuf)) goto loop_x;
